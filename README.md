@@ -33,6 +33,7 @@ $ ./engine alpine_fs /bin/sh
 ```
 
 ## Features
+### Namespaces
 The current implementation allows you to `unshare` the following namespaces:
 - `USER` namespace: creates a new user namespace where the current `uid` is mapped to `root`. This allows to have a `fakeroot` inside the container.  
 - `PID` namespace: allows to see only the processes running inside the container. Thus, the container processes are isolated from the processes running on the host machine.
@@ -41,3 +42,10 @@ The current implementation allows you to `unshare` the following namespaces:
 
 For more information, check the [namespaces](https://man7.org/linux/man-pages/man7/namespaces.7.html) documentation. 
 
+### PID 1 issue and Zombie processes
+In this implementation, the PID 1, common containers problem, is fixed: 
+
+When creating a new container, the command passed in parameters is not executed directly. Instead, we're running an extra process that acts as PID 1 (`init` or others) which executes the command as it's child process. Then, this process keeps watching the created processes and cleans up after the execution is finished.
+This allows us to clean any hanging process created by the container and not have zombie processes left after the container is down.
+
+Most times, when using container technology, we execute a command on the container startup and it gets the PID 1. However, aside from its functionality, the PID 1 has also the responsability of cleaning and dead process or any zombie processes, which needs to be implemented.
