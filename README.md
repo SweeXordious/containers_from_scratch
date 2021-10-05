@@ -49,3 +49,11 @@ When creating a new container, the command passed in parameters is not executed 
 This allows us to clean any hanging process created by the container and not have zombie processes left after the container is down.
 
 Most times, when using container technology, we execute a command on the container startup and it gets the PID 1. However, aside from its functionality, the PID 1 has also the responsability of cleaning and dead process or any zombie processes, which needs to be implemented.
+
+## Limitations
+### Namespaces
+Only the namespaces listed above are isolated. However, the others are not. Meaning if you create new `network interfaces`, for example, you will see the changes reflecting on your host machine. Or, you won't be able to due to lack of privilege (Outside the isolated `USER` namespace, we have no super user powers).
+
+### Implementation
+- Test Coverage: 0% :(
+- The implementation uses both C and C++ idioms which is not good. The reason we're using C++ is for `default arguments`, for example, and other syntax sugar. This needs to be cleaned.
