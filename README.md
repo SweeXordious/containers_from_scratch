@@ -1,5 +1,5 @@
 # Containers from scratch
-Using linux namespaces to isolate processes
+Use of linux namespaces to isolate processes.
 
 # How to build
 ### Requirements
