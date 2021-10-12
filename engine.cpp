@@ -156,7 +156,41 @@ static int startEngine(char *fsPath, char *command, char **args) {
   return 0;
 }
 
+// Testing the user namespace
+void namespaceIsolationTest() {
+  char* pathName = (char*) malloc(100* sizeof(char));
+  sprintf(pathName, "/proc/%d/ns/user", getpid());
+
+  char* oldUserNS = (char*) malloc( 100* sizeof(char));
+  readlink(pathName, oldUserNS,  100* sizeof(char));
+
+  // unshare the process
+  unshareUserNameSpace();
+
+  char* newUserNS = (char*) malloc( 100* sizeof(char));
+  readlink(pathName, newUserNS,  100* sizeof(char));
+
+  // Check we don't have the same namespace
+  if(strcmp(oldUserNS, newUserNS) == 0 ) {
+    fprintf(stderr, "User namespace isolation Failed!\n");
+  } else {
+    fprintf(stderr, "User namespace isolation Succeeded!\n\tOld user namespace: %s\n\t New user namespace: %s\n", oldUserNS, newUserNS);
+  }
+
+  free(pathName);
+  free(oldUserNS);
+}
+
+void runTests() {
+  namespaceIsolationTest();
+  // Eventually other tests
+}
+
 int main(int argc, char **argv) {
-  startEngine(argv[1], argv[2], &argv[2]);
+  if (argc >= 1 && strcmp(argv[1], "test") == 0) {
+    runTests();
+  } else {
+    startEngine(argv[1], argv[2], &argv[2]);
+  }
   return 0;
 }
