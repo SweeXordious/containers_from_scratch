@@ -55,5 +55,5 @@ Most times, when using container technology, we execute a command on the contain
 Only the namespaces listed above are isolated. However, the others are not. Meaning if you create new `network interfaces`, for example, you will see the changes reflecting on your host machine. Or, you won't be able to due to lack of privilege (Outside the isolated `USER` namespace, we have no super user powers).
 
 ### Implementation
-- Test Coverage: 0% :(
+- Test Coverage: only the user namespace isolation is tested.
 - The implementation uses both C and C++ idioms which is not good. The reason we're using C++ is for `default arguments`, for example, and other syntax sugar. This needs to be cleaned.
